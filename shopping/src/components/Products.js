@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react"
+import axios from "axios"
 
 const Products = () => {
 
   // Store products from API results
 
-  const [products, updateProducts] = useState([]);
+  const [products, updateProducts] = useState([])
 
   // Store products in cart
 
-  const [cart, updateCart] = useState([]);
+  const [cart, updateCart] = useState([])
 
   // Cart total
 
-  const [total, updateTotal] = useState(0);
+  const [total, updateTotal] = useState(0)
 
 //   Store Quantities of each product
 const [quantities, updateQuantities] = useState({
@@ -28,23 +28,29 @@ const [quantities, updateQuantities] = useState({
 
   useEffect(() => {
     axios.get(`https://fakestoreapi.com/products`).then((resp) => {
-      updateProducts(resp.data);
+      updateProducts(resp.data)
     });
   }, []);
 
   // Add to cart
 
   function handleAddToCart(i) {
-    const newCart = [...cart];
-    const productIndex = i - 1;
+    const newCart = [...cart]
+    const productIndex = i - 1
 
     //  Check if product is already in cart before pushing
 
-    const presentCheck = newCart.indexOf(products[productIndex]);
+    const presentCheck = newCart.indexOf(products[productIndex])
     if (presentCheck < 0) {
-      newCart.push(products[productIndex]);
+      newCart.push(products[productIndex])
+      const data = {
+        ...quantities,
+        [i]: 1
     }
-    updateCart(newCart);
+
+    updateQuantities(data)
+    }
+    updateCart(newCart)
   }
 
   //  Caculate total
@@ -53,14 +59,12 @@ const [quantities, updateQuantities] = useState({
     let newTotal = 0;
     for (let i = 0; i < cart.length; i++) {
         const id = cart[i].id
-        console.log(id)
         const itemQuantity = quantities[id]
-        console.log(itemQuantity)
         const itemPrice = cart[i].price
         const priceToAdd = itemPrice * itemQuantity
       newTotal = newTotal + priceToAdd
     }
-    updateTotal(newTotal.toFixed(2));
+    updateTotal(newTotal.toFixed(2))
   }
 
   //  Clear Total
@@ -96,7 +100,7 @@ const [quantities, updateQuantities] = useState({
           </progress>
         </div>
       </div>
-    );
+    )
   }
 
   // JSX
@@ -145,7 +149,7 @@ const [quantities, updateQuantities] = useState({
                         </button>
                       </div>
                     </article>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -172,13 +176,14 @@ const [quantities, updateQuantities] = useState({
                       <input 
                         className="input" 
                         type="number" 
-                        defaultValue="0" 
+                        defaultValue={quantities[product.id]}
                         name={product.id}
                         onChange={handleQuantityChange}
+                        min="0"
                     />
                     </div>
                   </article>
-                );
+                )
               })}
             </div>
             <div>
@@ -201,7 +206,6 @@ const [quantities, updateQuantities] = useState({
         </div>
       </div>
     </div>
-  );
-};
-
+  )
+}
 export default Products;
