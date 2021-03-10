@@ -1,56 +1,55 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Products = () => {
-
   // Store products from API results
 
-  const [products, updateProducts] = useState([])
+  const [products, updateProducts] = useState([]);
 
   // Store products in cart
 
-  const [cart, updateCart] = useState([])
+  const [cart, updateCart] = useState([]);
 
   // Cart total
 
-  const [total, updateTotal] = useState(0)
+  const [total, updateTotal] = useState(0);
 
-//   Store Quantities of each product
-const [quantities, updateQuantities] = useState({
+  //   Store Quantities of each product
+  const [quantities, updateQuantities] = useState({
     1: 0,
     2: 0,
     3: 0,
     4: 0,
     5: 0,
-})
+  });
 
   // fetch products from API
 
   useEffect(() => {
     axios.get(`https://fakestoreapi.com/products`).then((resp) => {
-      updateProducts(resp.data)
+      updateProducts(resp.data);
     });
   }, []);
 
   // Add to cart
 
   function handleAddToCart(i) {
-    const newCart = [...cart]
-    const productIndex = i - 1
+    const newCart = [...cart];
+    const productIndex = i - 1;
 
     //  Check if product is already in cart before pushing
 
-    const presentCheck = newCart.indexOf(products[productIndex])
+    const presentCheck = newCart.indexOf(products[productIndex]);
     if (presentCheck < 0) {
-      newCart.push(products[productIndex])
+      newCart.push(products[productIndex]);
       const data = {
         ...quantities,
-        [i]: 1
-    }
+        [i]: 1,
+      };
 
-    updateQuantities(data)
+      updateQuantities(data);
     }
-    updateCart(newCart)
+    updateCart(newCart);
   }
 
   //  Caculate total
@@ -58,34 +57,41 @@ const [quantities, updateQuantities] = useState({
   function handleTotal() {
     let newTotal = 0;
     for (let i = 0; i < cart.length; i++) {
-        const id = cart[i].id
-        const itemQuantity = quantities[id]
-        const itemPrice = cart[i].price
-        const priceToAdd = itemPrice * itemQuantity
-      newTotal = newTotal + priceToAdd
+      const id = cart[i].id;
+      const itemQuantity = quantities[id];
+      const itemPrice = cart[i].price;
+      const priceToAdd = itemPrice * itemQuantity;
+      newTotal = newTotal + priceToAdd;
     }
-    updateTotal(newTotal.toFixed(2))
+    updateTotal(newTotal.toFixed(2));
   }
 
   //  Clear Total
-
   function handleClear() {
-    updateTotal(0);
+    const newQuantities = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    }
+    updateQuantities(newQuantities)
+    updateTotal(0)
   }
 
-//   handle quantity change
+  //   handle quantity change
 
   function handleQuantityChange(event) {
-      const name = event.target.name
+    const name = event.target.name;
 
-      const value = event.target.value
+    const value = event.target.value;
 
-      const data = {
-          ...quantities,
-          [name]: Number(value)
-      }
+    const data = {
+      ...quantities,
+      [name]: Number(value),
+    };
 
-      updateQuantities(data)
+    updateQuantities(data);
   }
 
   // Loading screen while fetching products
@@ -100,7 +106,7 @@ const [quantities, updateQuantities] = useState({
           </progress>
         </div>
       </div>
-    )
+    );
   }
 
   // JSX
@@ -109,9 +115,7 @@ const [quantities, updateQuantities] = useState({
     <div className="App">
       <div className="container is-fluid">
         <div className="columns mt-6">
-
-            {/* Left Column */}
-
+          {/* Left Column */}
 
           <div className="column is-two-thirds pb-6">
             <div className="container is-fluid">
@@ -127,7 +131,7 @@ const [quantities, updateQuantities] = useState({
                     >
                       <figure className="media-left">
                         <p className="image is-32x32">
-                          <img src={product.image} alt={product.name}/>
+                          <img src={product.image} alt={product.name} />
                         </p>
                       </figure>
                       <div className="media-content">
@@ -149,20 +153,20 @@ const [quantities, updateQuantities] = useState({
                         </button>
                       </div>
                     </article>
-                  )
+                  );
                 })}
               </div>
             </div>
           </div>
 
-        {/* Right Column */}
+          {/* Right Column */}
 
           <div className="column is-one-quarter">
             <p className="is-size-1 has-text-centered has-text-black pt-3 pb-5">
               Cart
             </p>
             <div className="container">
-                {!cart[0] && <p>Add a product to your basket</p>}
+              {!cart[0] && <p>Add a product to your basket</p>}
               {cart.map((product, index) => {
                 return (
                   <article className="media" key={index}>
@@ -173,17 +177,17 @@ const [quantities, updateQuantities] = useState({
                     </div>
                     <div className="media-right">
                       <p>£{product.price}</p>
-                      <input 
-                        className="input" 
-                        type="number" 
-                        defaultValue={quantities[product.id]}
+                      <input
+                        className="input"
+                        type="number"
+                        value={quantities[product.id]}
                         name={product.id}
                         onChange={handleQuantityChange}
                         min="0"
-                    />
+                      />
                     </div>
                   </article>
-                )
+                );
               })}
             </div>
             <div>
@@ -199,13 +203,10 @@ const [quantities, updateQuantities] = useState({
                 </button>
               </div>
             </div>
-          
-          
-          
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 export default Products;
